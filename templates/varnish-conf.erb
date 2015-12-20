@@ -98,7 +98,7 @@ DAEMON_OPTS="-a <%= scope.lookupvar('varnish_listen_address') %>:<%= scope.looku
              -s <%= scope.lookupvar('storage_type') %>,<%= scope.lookupvar('varnish_storage_file') %>,<%= scope.lookupvar('varnish_storage_size') %> \
 <% end -%>
 <% if scope.lookupvar('varnish::params::version').to_i == 4 -%>
-      <% if scope.lookupvar('varnish::params::version').to_f < 4.1 -%>
+      <% if scope.lookupvar('varnish::version').to_f < 4.1 -%>
              -u <%= scope.lookupvar('varnish_user') %> \
              -g <%= scope.lookupvar('varnish_group') %> \
       <% end %>
