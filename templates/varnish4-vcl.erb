@@ -36,6 +36,12 @@ sub vcl_recv {
   unset req.http.If-None-Match;
 <%- end -%>
 
+<%- if @tls_proxy_port -%>
+  if (std.port(server.ip) == <%= @tls_proxy_port %>) {
+    set req.http.X-Forwarded-Proto = "https";
+  }
+<%- end -%>
+
   # cookie sanitization
   if (req.http.Cookie) {
     set req.http.Cookie = ";"+req.http.Cookie;

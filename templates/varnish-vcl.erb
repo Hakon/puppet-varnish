@@ -29,6 +29,13 @@ sub vcl_recv {
   }
 <%- end -%>
 
+<%- if @tls_proxy_port -%>
+  if (server.port == <%= @tls_proxy_port %>) {
+    set req.http.X-Forwarded-Proto = "https";
+  }
+<%- end -%>
+
+
 <%- if @https_redirect -%>
   # Redirect to https if coming over http according to X-Forwarded-Proto
   if ( req.http.X-Forwarded-Proto && req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "no-ssl-rewrite" ) {
