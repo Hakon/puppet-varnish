@@ -12,11 +12,14 @@
 # $varnish_listen_port -> VARNISH_LISTEN_PORT
 #
 # Exceptions are:
-# shmlog_dir    - location for shmlog
-# shmlog_tempfs - mounts shmlog directory as tmpfs
-#                 default value: true
-# version       - passed to puppet type 'package', attribute 'ensure'
-# add_repo      - if set to false (defaults to true), the yum/apt repo is not added
+# shmlog_dir           - location for shmlog
+# shmlog_tempfs        - mounts shmlog directory as tmpfs
+#                        default value: true
+# version              - passed to puppet type 'package', attribute 'ensure'
+# add_repo             - if set to false (defaults to true), the yum/apt repo is not added
+# extra_listen_options - extra interfaces varnish should listen to.
+#                        format: <address[:port][,PROTO]>
+#                        (PROTO is only available on varnish >= 4.1)
 #
 # === Default values
 # Set to Varnish default values
