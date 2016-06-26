@@ -18,6 +18,11 @@
 # pipe_uploads - If the request is a post/put upload (chunked or multipart),
 #                pipe the request to the backend.
 #                default value: false
+# tls_proxy_port - The port number ssl/tls traffic arrives on. Automatically
+#                  sets X-Forwarded-Proto to https on that port. On varnish 4.1
+#                  this works with PROXY protocol.
+#                  normally: 443
+#                  default value: undef
 #
 #
 #
@@ -59,6 +64,7 @@ class varnish::vcl (
   $https_redirect    = false,
   $drop_stat_cookies = true,
   $cond_unset_cookies = undef,
+  $tls_proxy_port    = undef,
 ) {
 
   include varnish
@@ -93,6 +99,7 @@ class varnish::vcl (
     }
   }
 
+  validate_integer($tls_proxy_port)
   # vcl file
   file { 'varnish-vcl':
     ensure  => present,
