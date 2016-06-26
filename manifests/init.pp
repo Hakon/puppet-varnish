@@ -66,6 +66,7 @@ class varnish (
   $varnish_secret_file          = '/etc/varnish/secret',
   $varnish_storage_file         = '/var/lib/varnish-storage/varnish_storage.bin',
   $varnish_ttl                  = '120',
+  $extra_listen_options         = [],
   $vcl_dir                      = undef,
   $shmlog_dir                   = '/var/lib/varnish',
   $shmlog_tempfs                = true,
