@@ -63,6 +63,8 @@ sub vcl_recv {
   unset req.http.If-None-Match;
 <%- end -%>
 
+  unset req.http.Proxy;
+
   # cookie sanitization
   if (req.http.Cookie) {
 
