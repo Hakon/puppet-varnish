@@ -67,11 +67,13 @@ class varnish (
   $varnish_storage_file         = '/var/lib/varnish-storage/varnish_storage.bin',
   $varnish_ttl                  = '120',
   $extra_listen_options         = [],
+  $vcl_dir                      = undef,
   $shmlog_dir                   = '/var/lib/varnish',
   $shmlog_tempfs                = true,
   $version                      = present,
   $add_repo                     = true,
   $manage_firewall              = false,
+  $varnish_conf_template        = 'varnish/varnish-conf.erb',
 ) {
 
   # read parameters
@@ -104,7 +106,7 @@ class varnish (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('varnish/varnish-conf.erb'),
+    content => template($varnish_conf_template),
     require => Package['varnish'],
     notify  => Exec['restart-varnish'],
   }
