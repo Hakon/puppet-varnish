@@ -109,10 +109,18 @@ DAEMON_OPTS="-a <%= scope.lookupvar('varnish_listen_address') %>:<%= scope.looku
 <% @additional_parameters.each do |param, value| -%>
              -p <%= param %>=<%= value %> \
 <% end -%>
+<<<<<<< HEAD
+<% if scope.lookupvar('varnish::params::version').to_i == 4 -%>
+      <% if scope.lookupvar('varnish::version').to_f < 4.1 -%>
+             -u <%= scope.lookupvar('varnish_user') %> \
+             -g <%= scope.lookupvar('varnish_group') %> \
+      <% end %>
+=======
 <% @additional_storages.each do |name,storage| -%>
              -s <%= name %>=<%= storage %> \
 <% end -%>
 <% if scope.function_versioncmp([@real_version, '4']) >= 0 -%>
+>>>>>>> maxchk/develop
              -p thread_pool_min=<%= scope.lookupvar('varnish_min_threads') %> \
              -p thread_pool_max=<%= scope.lookupvar('varnish_max_threads') %> \
              -p thread_pool_timeout=<%= scope.lookupvar('varnish_thread_timeout') %>"
