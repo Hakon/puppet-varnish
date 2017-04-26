@@ -19,10 +19,10 @@
 
 class varnish::service (
   $start                  = 'yes',
-  $systemd                = $::varnish::params::systemd,
-  $systemd_conf_path      = $::varnish::params::systemd_conf_path,
-  $vcl_reload_script      = $::varnish::params::vcl_reload_script
-) {
+  $systemd                = $varnish::params::systemd,
+  $systemd_conf_path      = $varnish::params::systemd_conf_path,
+  $vcl_reload_script      = $varnish::params::vcl_reload_script,
+) inherits varnish::params {
 
   # include install
   include ::varnish::install
@@ -52,27 +52,22 @@ class varnish::service (
     default     => undef,
   }
 
-  exec {'restart-varnish':
+  exec { 'restart-varnish':
     command     => $restart_command,
     refreshonly => true,
-    require     => Service['varnish'],
+    before      => Service['varnish'],
+    require     => Package['varnish'],
   }
 
   if $systemd {
-      file {  $systemd_conf_path :
-        ensure => file,
-        content => template('varnish/varnish.service.erb'),
-        notify => Exec['Reload systemd'],
-        before => [Service['varnish'], Exec['restart-varnish']],
-        require => Package['varnish'],
-      }
+    include ::varnish::systemd
 
-      if (!defined(Exec['Reload systemd'])) {
-        exec {'Reload systemd':
-          command     => 'systemctl daemon-reload',
-          path        => ['/bin','/sbin','/usr/bin','/usr/sbin'],
-          refreshonly => true,
-        }
-      }
+    file {  $systemd_conf_path :
+      ensure => file,
+      content => template('varnish/varnish.service.erb'),
+      notify => Exec['Reload systemd'],
+      before => [Service['varnish'], Exec['restart-varnish']],
+      require => Package['varnish'],
+    }
   }
 }

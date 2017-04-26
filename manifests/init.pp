@@ -78,9 +78,11 @@ class varnish (
   $manage_firewall              = false,
   $varnish_conf_template        = 'varnish/varnish-conf.erb',
   $varnish_identity             = undef,
+  $varnish_name                 = undef,
   $additional_parameters        = {},
   $additional_storages          = {},
-) {
+  $conf_file_path               = $varnish::params::conf_file_path,
+) inherits varnish::params {
 
   # read parameters
   include varnish::params
@@ -98,6 +100,25 @@ class varnish (
     }
   } else {
     $real_version = $version
+  }
+
+  case $varnish_storage_size {
+    /%$/: {
+      case $storage_type {
+        'malloc': {
+          $varnish_storage_size_percentage = scanf($varnish_storage_size, "%f%%")
+          $varnish_actual_storage_size = sprintf("%dM", floor($::memorysize_mb * $varnish_storage_size_percentage[0] / 100))
+        }
+
+        default: {
+          fail("A percentage-based storage size can only be specified if using 'malloc' storage")
+        }
+      }
+    }
+
+    default: {
+      $varnish_actual_storage_size = $varnish_storage_size
+    }
   }
 
   # install Varnish
@@ -122,8 +143,8 @@ class varnish (
 
   # varnish config file
   file { 'varnish-conf':
-    ensure  => present,
-    path    => $varnish::params::conf_file_path,
+    ensure  => 'file',
+    path    => $conf_file_path,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
