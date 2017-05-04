@@ -28,10 +28,6 @@ sub vcl_recv {
 <%- if @functions['vcl_recv_prepend'] -%>
   <%= @functions.delete('vcl_recv_prepend') %>
 <%- end -%>
-<%- if @defaultgrace -%>
-  # Default grace period
-  set req.grace = <%= @defaultgrace %>;
-<%- end -%>
 <%- if @logrealip -%>
   if (req.http.X-Forwarded-For) {
      std.log("RealIP:" + req.http.X-Forwarded-For);
@@ -209,7 +205,7 @@ sub vcl_backend_response {
 <%- else -%>
 <%- if @defaultgrace -%>
   # Default grace period
-  set bereq.grace = <%= @defaultgrace %>;
+  set beresp.grace = <%= @defaultgrace %>;
 <%- end -%>
 
   if (beresp.http.content-type ~ "<%- @gziptypes.each do |type| -%>^<%= type %><%- if type != @gziptypes[-1] -%>|<%-end-%><%-end-%>") {
